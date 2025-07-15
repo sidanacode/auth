@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Location Picker</title>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFyDv8j7auqKfGVJiSJZmfcfFJgPXjIm8&libraries=geometry&callback=initMap"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, button { padding: 10px; margin: 10px 0; width: 300px; font-size: 16px; }
+    #map { height: 400px; width: 100%; margin-top: 20px; }
+    #output p { font-size: 16px; margin: 4px 0; }
+    pre { background: #f9f9f9; padding: 10px; border: 1px solid #ccc; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h2>📍 Location Picker</h2>
+
+  <input type="text" id="name" placeholder="Enter your name"><br>
+  <input type="hidden" id="phone">
+  <button onclick="useCurrentLocation()">📌 Use My Current Location</button>
+
+  <div id="map"></div>
+
+  <h3>📍 Location Details</h3>
+  <div id="output">
+    <p><strong>Latitude:</strong> <span id="lat">-</span></p>
+    <p><strong>Longitude:</strong> <span id="lng">-</span></p>
+    <p><strong>Full Address:</strong> <span id="address">-</span></p>
+    <p><strong>Street Number:</strong> <span id="street_number">-</span></p>
+    <p><strong>Street Name:</strong> <span id="street_name">-</span></p>
+    <p><strong>Neighborhood:</strong> <span id="neighborhood">-</span></p>
+    <p><strong>City:</strong> <span id="city">-</span></p>
+    <p><strong>State:</strong> <span id="state">-</span></p>
+    <p><strong>Country:</strong> <span id="country">-</span></p>
+    <p><strong>Postal Code:</strong> <span id="postal_code">-</span></p>
+    <p><strong>Place ID:</strong> <span id="place_id">-</span></p>
+  </div>
+
+  <h4>🧾 JSON Payload</h4>
+  <pre id="json_output">{}</pre>
+
+  <br>
+  <button onclick="saveData()">💾 Save to API</button>
+
+  <script src="location.js"></script>
+</body>
+</html>
