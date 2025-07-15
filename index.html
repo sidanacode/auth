@@ -1,28 +1,169 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Phone OTP Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔐 Secure Phone Login | Firebase Auth</title>
+  
+  <!-- 🎨 Beautiful CSS Styling -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- 🔥 Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
   <script src="firebase-config.js"></script>
-  <style>
-    input, button {
-      padding: 10px;
-      font-size: 16px;
-      margin: 8px 0;
-    }
-  </style>
+  
+  <!-- 📱 Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h2>📱 Phone OTP Login</h2>
+  <div class="auth-container">
+    <div class="card fade-in">
+      <!-- 🎯 Header Section -->
+      <div class="card-header">
+        <h1 class="card-title gradient-text">📱 Phone OTP Login</h1>
+        <p class="card-subtitle">Enter your phone number to receive a secure OTP code</p>
+      </div>
 
-  <input type="text" id="phone" placeholder="+91xxxxxxxxxx"><br>
-  <div id="recaptcha-container"></div>
-  <button onclick="sendOTP()">Send OTP</button><br>
+      <!-- 📞 Phone Number Section -->
+      <div class="form-group">
+        <label for="phone" class="form-label">📞 Phone Number</label>
+        <input 
+          type="tel" 
+          id="phone" 
+          class="form-input" 
+          placeholder="+91xxxxxxxxxx"
+          autocomplete="tel"
+        >
+      </div>
 
-  <input type="text" id="otp" placeholder="Enter OTP"><br>
-  <button onclick="verifyOTP()">Verify OTP</button>
+      <!-- 🔒 ReCAPTCHA Container -->
+      <div id="recaptcha-container"></div>
 
+      <!-- 📤 Send OTP Button -->
+      <div class="form-group">
+        <button 
+          onclick="sendOTP()" 
+          class="btn btn-primary btn-full"
+          id="sendOtpBtn"
+        >
+          <span>📤 Send OTP</span>
+        </button>
+      </div>
+
+      <!-- 🔢 OTP Input Section -->
+      <div class="form-group">
+        <label for="otp" class="form-label">🔢 Enter OTP Code</label>
+        <input 
+          type="text" 
+          id="otp" 
+          class="form-input" 
+          placeholder="Enter 6-digit OTP"
+          maxlength="6"
+          autocomplete="one-time-code"
+        >
+      </div>
+
+      <!-- ✅ Verify OTP Button -->
+      <div class="form-group">
+        <button 
+          onclick="verifyOTP()" 
+          class="btn btn-success btn-full"
+          id="verifyOtpBtn"
+        >
+          <span>✅ Verify & Login</span>
+        </button>
+      </div>
+
+      <!-- 🔄 Status Display -->
+      <div id="status-display" style="margin-top: 24px; text-align: center;"></div>
+    </div>
+
+    <!-- 🔐 Security Note -->
+    <div class="card fade-in" style="margin-top: 24px; text-align: center;">
+      <p style="color: var(--text-secondary); font-size: 0.875rem;">
+        🛡️ <strong>Secure Authentication:</strong> Your phone number is protected with Firebase security.
+        <br>The OTP code expires in 5 minutes for your safety.
+      </p>
+    </div>
+  </div>
+
+  <!-- 📱 Enhanced JavaScript -->
   <script src="script.js"></script>
+  
+  <!-- ✨ Enhanced UI Interactions -->
+  <script>
+    // 🎯 Add loading states and better UX
+    document.addEventListener('DOMContentLoaded', function() {
+      const phoneInput = document.getElementById('phone');
+      const otpInput = document.getElementById('otp');
+      const sendBtn = document.getElementById('sendOtpBtn');
+      const verifyBtn = document.getElementById('verifyOtpBtn');
+      
+      // 📱 Format phone number as user types
+      phoneInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 0 && !value.startsWith('91')) {
+          value = '91' + value;
+        }
+        if (value.length > 2) {
+          e.target.value = '+' + value;
+        }
+      });
+      
+      // 🔢 Auto-format OTP input
+      otpInput.addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+      });
+    });
+
+    // 🎨 Enhanced send OTP function with loading state
+    const originalSendOTP = window.sendOTP;
+    window.sendOTP = function() {
+      const btn = document.getElementById('sendOtpBtn');
+      const statusDiv = document.getElementById('status-display');
+      
+      btn.classList.add('loading');
+      btn.disabled = true;
+      btn.innerHTML = '<span>📤 Sending...</span>';
+      
+      statusDiv.innerHTML = '<div class="status-indicator status-warning">⏳ Sending OTP...</div>';
+      
+      // Call original function with enhanced UX
+      try {
+        originalSendOTP();
+      } catch (error) {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        btn.innerHTML = '<span>📤 Send OTP</span>';
+        statusDiv.innerHTML = '<div class="status-indicator status-error">❌ Failed to send OTP</div>';
+      }
+    };
+
+    // 🎨 Enhanced verify OTP function with loading state
+    const originalVerifyOTP = window.verifyOTP;
+    window.verifyOTP = function() {
+      const btn = document.getElementById('verifyOtpBtn');
+      const statusDiv = document.getElementById('status-display');
+      
+      btn.classList.add('loading');
+      btn.disabled = true;
+      btn.innerHTML = '<span>🔄 Verifying...</span>';
+      
+      statusDiv.innerHTML = '<div class="status-indicator status-warning">🔍 Verifying OTP...</div>';
+      
+      // Call original function with enhanced UX
+      try {
+        originalVerifyOTP();
+      } catch (error) {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        btn.innerHTML = '<span>✅ Verify & Login</span>';
+        statusDiv.innerHTML = '<div class="status-indicator status-error">❌ Invalid OTP</div>';
+      }
+    };
+  </script>
 </body>
 </html>

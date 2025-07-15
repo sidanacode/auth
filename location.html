@@ -1,49 +1,280 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Location Picker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📍 Location Picker | Firebase Auth</title>
+  
+  <!-- 🎨 Beautiful CSS Styling -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- 🔥 Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
   <script src="firebase-config.js"></script>
+  
+  <!-- 🗺️ Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFyDv8j7auqKfGVJiSJZmfcfFJgPXjIm8&libraries=geometry&callback=initMap"></script>
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    input, button { padding: 10px; margin: 10px 0; width: 300px; font-size: 16px; }
-    #map { height: 400px; width: 100%; margin-top: 20px; }
-    #output p { font-size: 16px; margin: 4px 0; }
-    pre { background: #f9f9f9; padding: 10px; border: 1px solid #ccc; overflow-x: auto; }
-  </style>
+  
+  <!-- 📱 Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h2>📍 Location Picker</h2>
+  <div class="location-container">
+    <!-- 🎯 Header Card -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <h1 class="card-title gradient-text">📍 Location Picker</h1>
+        <p class="card-subtitle">Choose your location to complete registration</p>
+      </div>
 
-  <input type="text" id="name" placeholder="Enter your name"><br>
-  <input type="hidden" id="phone">
-  <button onclick="useCurrentLocation()">📌 Use My Current Location</button>
+      <!-- 👤 User Information -->
+      <div class="form-group">
+        <label for="name" class="form-label">👤 Your Name</label>
+        <input 
+          type="text" 
+          id="name" 
+          class="form-input" 
+          placeholder="Enter your full name"
+          autocomplete="name"
+        >
+        <input type="hidden" id="phone">
+      </div>
 
-  <div id="map"></div>
+      <!-- 📌 Location Action -->
+      <div class="form-group">
+        <button 
+          onclick="useCurrentLocation()" 
+          class="btn btn-primary btn-full"
+          id="locationBtn"
+        >
+          <span>📌 Use My Current Location</span>
+        </button>
+        <p style="text-align: center; color: var(--text-secondary); font-size: 0.875rem; margin-top: 8px;">
+          Or click anywhere on the map below to select location
+        </p>
+      </div>
+    </div>
 
-  <h3>📍 Location Details</h3>
-  <div id="output">
-    <p><strong>Latitude:</strong> <span id="lat">-</span></p>
-    <p><strong>Longitude:</strong> <span id="lng">-</span></p>
-    <p><strong>Full Address:</strong> <span id="address">-</span></p>
-    <p><strong>Street Number:</strong> <span id="street_number">-</span></p>
-    <p><strong>Street Name:</strong> <span id="street_name">-</span></p>
-    <p><strong>Neighborhood:</strong> <span id="neighborhood">-</span></p>
-    <p><strong>City:</strong> <span id="city">-</span></p>
-    <p><strong>State:</strong> <span id="state">-</span></p>
-    <p><strong>Country:</strong> <span id="country">-</span></p>
-    <p><strong>Postal Code:</strong> <span id="postal_code">-</span></p>
-    <p><strong>Place ID:</strong> <span id="place_id">-</span></p>
+    <!-- 🗺️ Map Container -->
+    <div class="card fade-in map-container">
+      <div id="map"></div>
+    </div>
+
+    <!-- 📊 Location Information Grid -->
+    <div class="info-grid fade-in">
+      <!-- 🌍 Coordinates Card -->
+      <div class="info-card">
+        <h4>🌍 Coordinates</h4>
+        <div class="info-item">
+          <span class="info-label">Latitude</span>
+          <span class="info-value" id="lat">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Longitude</span>
+          <span class="info-value" id="lng">-</span>
+        </div>
+      </div>
+
+      <!-- 🏠 Address Details Card -->
+      <div class="info-card">
+        <h4>🏠 Address Details</h4>
+        <div class="info-item">
+          <span class="info-label">Full Address</span>
+          <span class="info-value" id="address">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Street Number</span>
+          <span class="info-value" id="street_number">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Street Name</span>
+          <span class="info-value" id="street_name">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Neighborhood</span>
+          <span class="info-value" id="neighborhood">-</span>
+        </div>
+      </div>
+
+      <!-- 🌆 Location Info Card -->
+      <div class="info-card">
+        <h4>🌆 Location Info</h4>
+        <div class="info-item">
+          <span class="info-label">City</span>
+          <span class="info-value" id="city">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">State</span>
+          <span class="info-value" id="state">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Country</span>
+          <span class="info-value" id="country">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Postal Code</span>
+          <span class="info-value" id="postal_code">-</span>
+        </div>
+      </div>
+
+      <!-- 🆔 Google Maps Data Card -->
+      <div class="info-card">
+        <h4>🆔 Maps Data</h4>
+        <div class="info-item">
+          <span class="info-label">Place ID</span>
+          <span class="info-value" id="place_id">-</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🧾 JSON Payload Display -->
+    <div class="card fade-in">
+      <h4 style="color: var(--primary-color); margin-bottom: 16px;">🧾 JSON Payload</h4>
+      <pre id="json_output" class="code-display">{}</pre>
+    </div>
+
+    <!-- 🎬 Action Buttons -->
+    <div class="card fade-in">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <!-- 💾 Save to API Button -->
+        <button 
+          onclick="saveData()" 
+          class="btn btn-success"
+          id="saveBtn"
+        >
+          <span>💾 Save to API</span>
+        </button>
+        
+        <!-- 👤 Get User Data Button -->
+        <button 
+          onclick="getUserData()" 
+          class="btn btn-warning"
+          id="getUserBtn"
+        >
+          <span>👤 Get My Data</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 👤 User Data Display -->
+    <div class="card fade-in">
+      <h4 style="color: var(--primary-color); margin-bottom: 16px;">👤 User Data from API</h4>
+      <pre id="user_data_output" class="code-display">Click "Get My Data" to fetch your saved data</pre>
+    </div>
+
+    <!-- 🔐 Security & Status Info -->
+    <div class="card fade-in" style="text-align: center;">
+      <div id="status-display" style="margin-bottom: 16px;"></div>
+      <p style="color: var(--text-secondary); font-size: 0.875rem;">
+        🔐 <strong>Secure API:</strong> All requests are authenticated with Firebase tokens.
+        <br>🌍 <strong>Privacy:</strong> Your location data is encrypted and securely stored.
+      </p>
+    </div>
   </div>
 
-  <h4>🧾 JSON Payload</h4>
-  <pre id="json_output">{}</pre>
-
-  <br>
-  <button onclick="saveData()">💾 Save to API</button>
-
+  <!-- 📱 Enhanced JavaScript -->
   <script src="location.js"></script>
+  
+  <!-- ✨ Enhanced UI Interactions -->
+  <script>
+    // 🎯 Enhanced UI interactions and loading states
+    document.addEventListener('DOMContentLoaded', function() {
+      const nameInput = document.getElementById('name');
+      const saveBtn = document.getElementById('saveBtn');
+      const getUserBtn = document.getElementById('getUserBtn');
+      const statusDiv = document.getElementById('status-display');
+
+      // 👤 Name input validation
+      nameInput.addEventListener('input', function(e) {
+        if (e.target.value.trim().length > 0) {
+          e.target.style.borderColor = 'var(--success-color)';
+        } else {
+          e.target.style.borderColor = 'var(--border-color)';
+        }
+      });
+
+      // 🎨 Enhanced saveData function
+      const originalSaveData = window.saveData;
+      window.saveData = function() {
+        saveBtn.classList.add('loading');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span>💾 Saving...</span>';
+        
+        statusDiv.innerHTML = '<div class="status-indicator status-warning">⏳ Saving data to API...</div>';
+        
+        try {
+          originalSaveData();
+        } catch (error) {
+          saveBtn.classList.remove('loading');
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = '<span>💾 Save to API</span>';
+          statusDiv.innerHTML = '<div class="status-indicator status-error">❌ Save failed</div>';
+        }
+      };
+
+      // 🎨 Enhanced getUserData function
+      const originalGetUserData = window.getUserData;
+      window.getUserData = function() {
+        getUserBtn.classList.add('loading');
+        getUserBtn.disabled = true;
+        getUserBtn.innerHTML = '<span>👤 Loading...</span>';
+        
+        statusDiv.innerHTML = '<div class="status-indicator status-warning">🔍 Fetching user data...</div>';
+        
+        try {
+          originalGetUserData();
+        } catch (error) {
+          getUserBtn.classList.remove('loading');
+          getUserBtn.disabled = false;
+          getUserBtn.innerHTML = '<span>👤 Get My Data</span>';
+          statusDiv.innerHTML = '<div class="status-indicator status-error">❌ Fetch failed</div>';
+        }
+      };
+    });
+
+    // 🎯 Add success/error status updates
+    window.addEventListener('load', function() {
+      // Override alert function to show beautiful status messages
+      const originalAlert = window.alert;
+      window.alert = function(message) {
+        const statusDiv = document.getElementById('status-display');
+        
+        if (message.includes('success') || message.includes('✅')) {
+          statusDiv.innerHTML = '<div class="status-indicator status-success">' + message + '</div>';
+          
+          // Reset button states on success
+          setTimeout(() => {
+            const saveBtn = document.getElementById('saveBtn');
+            const getUserBtn = document.getElementById('getUserBtn');
+            
+            if (saveBtn.disabled) {
+              saveBtn.classList.remove('loading');
+              saveBtn.disabled = false;
+              saveBtn.innerHTML = '<span>💾 Save to API</span>';
+            }
+            
+            if (getUserBtn.disabled) {
+              getUserBtn.classList.remove('loading');
+              getUserBtn.disabled = false;
+              getUserBtn.innerHTML = '<span>👤 Get My Data</span>';
+            }
+          }, 2000);
+          
+        } else if (message.includes('error') || message.includes('❌') || message.includes('⚠️')) {
+          statusDiv.innerHTML = '<div class="status-indicator status-error">' + message + '</div>';
+        } else {
+          statusDiv.innerHTML = '<div class="status-indicator status-warning">' + message + '</div>';
+        }
+        
+        // Also show original alert for important messages
+        if (message.includes('name') || message.includes('location') || message.includes('authenticated')) {
+          originalAlert(message);
+        }
+      };
+    });
+  </script>
 </body>
 </html>
